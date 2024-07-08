@@ -13,14 +13,19 @@ services:
       POSTGRES_DB: kong
       POSTGRES_PASSWORD: kongpass
     restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kong"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   kong-migrations:
-    # image: kong/kong-gateway:3.7.1.1
     build: .
     container_name: kong-migrations
     depends_on:
       kong-database:
-        condition: service_started
+        condition: service_healthy  # Ensures that PostgreSQL is ready to accept connections
     networks:
       - kong-net
     environment:

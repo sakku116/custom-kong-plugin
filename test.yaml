@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Use a secure password
+      MYSQL_DATABASE: test         # Name of the database to create
+      MYSQL_USER: test                 # Username you want to create
+      MYSQL_PASSWORD: test     # Password for the user
+    ports:
+      - "3306:3306"  # Expose port 3306 on the host machine
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persist data even when container is destroyed
+
+volumes:
+  mysql_data:  # Named volume to store MySQL data

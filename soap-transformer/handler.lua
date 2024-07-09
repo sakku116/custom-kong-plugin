@@ -5,7 +5,7 @@ local JsonSoapTransformer = {
 
 
 function JsonSoapTransformer:access(conf)
-  kong.response.set_raw_body("Hello, world!")
+  kong.service.response.set_raw_body("Hello, world!")
 end
 
 return JsonSoapTransformer

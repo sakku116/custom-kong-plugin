@@ -28,6 +28,7 @@ function TransformResponseHandler:header_filter(conf)
             ngx.header["Accept-Encoding"] = nil
             ngx.header["Content-Encoding"] = nil
             kong.response.set_header("Accept-Encoding", "")
+            kong.response.clear_header("Content-Length")
         elseif content_type:find("application/xml", 1, true) or content_type:find("+xml", 1, true) then
             ngx.ctx.is_json_response = false
             ngx.ctx.is_xml_response = true
@@ -66,9 +67,7 @@ function TransformResponseHandler:body_filter(conf)
 
         if ctx.is_json_response then
             local jsonPay = cjson.decode(response_body)
-            if type(jsonPay) ~= "table" then
-              jsonPay = [[cjson.decode(response_body)]]
-            end
+            local soapXml = xml2lua.toXml(jsonPay, "Soap:Envelope")
             kong.response.set_raw_body(xml2lua.toXml(jsonPay, "Soap:Envelope"))
         end
         -- Clear buffer to prevent memory leaks
